@@ -1,0 +1,9 @@
+body {
+	padding-top: 70px;
+}
+.app-state {
+	font-weight: bold;
+}
+.templates {
+	display: none;
+}
