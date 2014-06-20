@@ -53,12 +53,12 @@ function createProxyApp(options) {
 	    useAuth = (typeof options.password === "string");
 	var procman;
 
-	util.logv("Password %s", (useAuth ? "set" : "not set"));
-	util.logv("application command line: %s", appCommand);
-	util.logv("VCAP_APP_PORT: %s", port);
-	util.logv("application port: %s", port_app);
-	util.logv("debug UI port: %s", port_debug);
-	util.logv("launcher URL prefix: %s", launcherPrefix);
+	util.log("Password %s", (useAuth ? "set" : "not set"));
+	util.log("Application command line: %s", appCommand);
+	util.log("VCAP_APP_PORT: %s", port);
+	util.log("Application port: %s", port_app);
+	util.log("Debug UI port: %s", port_debug);
+	util.log("Launcher URL prefix: %s", launcherPrefix);
 	util.logv();
 
 	procman = startProcesses(appName, appCommand, port_app, port_debug);
@@ -164,6 +164,12 @@ function createProxyApp(options) {
 	var app = express();
 	app.set("view engine", "ejs");
 	app.set("views", path.join(__dirname, "..", "views"));
+	// At runtime on CF, if the parent module being debugged uses express 4.x, npm satisfies our express dependency using
+	// the parent module's copy of express rather than install express locally to us. When the parent express tries to load
+	// view engines, it simply calls require("{engine}"), which fails from the parent module's context (as it likely does
+	// not depend on the same view engine that we do.)
+	// The fix is to load the engine here, from the correct require context.
+	app.engine("ejs", require("ejs").__express);
 	app.use(compression());
 	app.use(sessionMiddleware);
 	app.use(flash());

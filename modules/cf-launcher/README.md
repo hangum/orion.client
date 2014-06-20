@@ -1,7 +1,3 @@
-# Warning #
-The `cf-launcher@0.0.0` package published to npm is not recommended for general use. It may be unpublished or deprecated at any time.
-Please wait for a stable release before installing or depending on cf-launcher.
-
 # cf-launcher #
 A harness for your [Cloud Foundry](http://cloudfoundry.org/) application that makes debugging a bit easier. cf-launcher wraps a simple
 web UI around your app, adding a [visual debugger](https://github.com/node-inspector/node-inspector), and the ability to kill or restart
@@ -18,7 +14,7 @@ set the prefix to something else.
    $ npm install --save cf-launcher
    ```
 
-2. **Change your app's start command** to run `node_modules/.bin/cf-launcher`.
+2. **Change your app's start command** to run `node_modules/.bin/launcher`.
    This is usually done by editing your app's `manifest.yml`. For example, if your `manifest.yml` has this command:
 
    ```
@@ -28,7 +24,7 @@ set the prefix to something else.
    You would change it to this:
 
    ```
-   start: node_modules/.bin/cf-launcher -- node server.js
+   start: node_modules/.bin/launcher -- node server.js
    ```
 
 3. **Set a password**.
@@ -37,7 +33,7 @@ set the prefix to something else.
    The password can be provided as a command-line option (again, in your manifest.yml):
 
    ```
-   start: node_modules/.bin/cf-launcher --password secretPassw0rd -- node server.js
+   start: node_modules/.bin/launcher --password secretPassw0rd -- node server.js
    ```
 
    Or you can set an environment variable named `LAUNCHER_PASSWORD` in your application environment. This is usually
@@ -48,7 +44,7 @@ set the prefix to something else.
    ```
 
    The command-line argument takes priority over the environment variable if both are set. If you don't provide a password,
-   cf-launcher will refuse to run at deploy time.
+   cf-launcher refuses to run.
 
 4. **Deploy** your app.
 
@@ -56,7 +52,7 @@ set the prefix to something else.
    you provided earlier, and you're all set.
 
 
-## Usage ##
+## Usage
 
 	cf-launcher [options] -- [COMMAND]
 
@@ -64,8 +60,10 @@ Where `COMMAND` is the command you usually use to start your app (for example, `
 
 The supported `[options]` are:
 
-* `--password=password`: The password required to log in to cf-launcher.
-* `--urlprefix=prefix`: The URL prefix reserved by cf-launcher. Defaults to `urlprefix=/launcher`.
+#### `--password=secret`
+Required. Gives the password used to log in to cf-launcher.
+####  `--urlprefix=prefix`
+Optional. Gives the URL prefix reserved by cf-launcher. Defaults to `urlprefix=/launcher`.
 
 
 ## Uninstallation ##

@@ -31,7 +31,7 @@ exports.run = function(args) {
 	if (!password && !appenv.isLocal)
 		throw new Error("Missing required argument: password. (A password must be provided when running in the cloud.)" + USAGE);
 
-	util.log("Starting server at: %s", appenv.url);
+	util.log("Starting cf-launcher...");
 	var srv = startServer({
 		appCommand: command,
 		appName:    appenv.name, // name of the user app
