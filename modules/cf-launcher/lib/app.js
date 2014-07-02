@@ -59,7 +59,7 @@ function createProxyApp(options) {
 	util.log("Application port: %s", port_app);
 	util.log("Debug UI port: %s", port_debug);
 	util.log("Launcher URL prefix: %s", launcherPrefix);
-	util.logv();
+	util.log();
 
 	procman = startProcesses(appName, appCommand, port_app, port_debug);
 
@@ -123,11 +123,11 @@ function createProxyApp(options) {
 	launcherApp.use(bodyParser());
 	launcherApp.post("/login", function(req, res) {
 		if (req.body.password === password) {
-			util.logv("Successful login from: %s", req.ip);
+			util.log("Successful login from: %s", req.ip);
 			req.session.loggedIn = true;
 			res.redirect(launcherPrefix);
 		} else {
-			util.logv("Failed login attempt from: %s", req.ip);
+			util.log("Failed login attempt from: %s", req.ip);
 			req.flash("error", "Incorrect password.");
 			res.redirect("login");
 		}
@@ -139,7 +139,7 @@ function createProxyApp(options) {
 		res.render("login", { error: req.flash().error });
 	});
 	launcherApp.get("/logout", function(req, res) {
-		util.logv("Logout %s", req.ip);
+		util.log("Logout %s", req.ip);
 		req.session.reset();
 		res.redirect("login");
 	});
@@ -227,7 +227,7 @@ function startServer(options) {
 			sessionMiddleware(req, {}, function(err) {
 				if (isLoggedIn(req))
 					return debugProxy.ws(req, socket, head);
-				util.logv("Rejected unauthenticated access to node-inspector from %s", req.ip);
+				util.log("Rejected unauthenticated access to node-inspector from %s", req.ip);
 				return socket.destroy();
 			});
 		}

@@ -66,10 +66,6 @@ utils.log = function(/*message, replacements*/) {
 	console.log(pkgname + ": " + nodeutil.format.apply(nodeutil, arguments));
 };
 
-utils.logv = function(/*message, replacements*/) {
-	utils.VERBOSE && utils.log.apply(utils.log, arguments);
-};
-
 // Helper to get a port within the "safe" range [minPort, portCount-1]. Note that minPort
 // should always be > V8_DEBUG_PORT
 var portCount = 65536,
