@@ -9,9 +9,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 /*jslint node:true*/
-var nodeutil = require("util"),
-    pkg = require("../package.json"),
-    pkgname = pkg.name,
+var pkg = require("../package.json"),
+    debug = require("debug")(pkg.name),
+    nodeutil = require("util"),
     utils = exports;
 
 utils.V8_DEBUG_PORT = 5858;
@@ -60,10 +60,10 @@ utils.extend = function(target, source) {
 };
 
 /**
- * Log with printf-style substitution.
+ * Logs a debug message with printf-style substitution.
  */
 utils.log = function(/*message, replacements*/) {
-	console.log(pkgname + ": " + nodeutil.format.apply(nodeutil, arguments));
+	debug(nodeutil.format.apply(nodeutil, arguments));
 };
 
 // Helper to get a port within the "safe" range [minPort, portCount-1]. Note that minPort

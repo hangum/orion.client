@@ -65,6 +65,14 @@ Required. Gives the password used to log in to cf-launcher.
 ####  `--urlprefix=prefix`
 Optional. Gives the URL prefix reserved by cf-launcher. Defaults to `urlprefix=/launcher`.
 
+## Environment variables ##
+* The `DEBUG` environment variable enables debugging output from cf-launcher. Set it to "cf-launcher" to activate it:
+   ```shell
+   $ cf set-env myapp DEBUG cf-launcher
+   ```
+ (The DEBUG variable can enable debugging for multiple libraries simultaneously. See [debug](https://www.npmjs.org/package/debug) for details.)
+
+* The `PASSWORD` environment variable gives the password used to log in to cf-launcher.
 
 ## Uninstallation ##
 When your app is ready for production, you should uninstall cf-launcher.
