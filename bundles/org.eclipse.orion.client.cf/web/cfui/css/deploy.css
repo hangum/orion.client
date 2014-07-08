@@ -9,6 +9,10 @@ html, body {
     min-width: 350px;
 }
 
+input:invalid, .invalid {
+	box-shadow: 0px 0px 5px rgba(255,0,0,0.6);
+}
+
 .dialogFrame {
 	background-color: #fdfdfd;
 }
@@ -37,13 +41,48 @@ html, body {
     margin-bottom: 10px;
 }
 
-#orgsDropdown{
+.devSection {
+	border: 1px solid #dadada;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.098), 0 1px 0 0 rgba(0, 0, 0, 0.098);
+	margin-top: 20px;
+	padding: 10px 10px 10px 10px;
+	min-height: 50px;
+}
+
+.devSection label {
+	user-select: none;
+	-moz-user-select: -moz-none;
+	-webkit-user-select: none;
+}
+
+.devSection>div {
+	margin-top: 10px;
+}
+
+.devSection>div:first-child {
+	margin-top: 0 !important;
+}
+
+.devSection:last-child {
+	margin-bottom: 0;
+}
+
+
+.devSection .rightField, .devSection .leftLabel {
+	width: auto;
+}
+
+.hidden {
+	display: none;
+}
+
+.rightField {
     float: right;
     text-align: right;
     width: calc(100% - 80px);
 }
 
-#orgsLabel{
+.leftLabel {
     border: 0 none;
     float: left;
     padding-top: 4px;

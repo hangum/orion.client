@@ -73,7 +73,7 @@ define(['orion/Deferred', 'orion/cfui/cFClient', 'orion/URITemplate', 'orion/ser
 	var preferences = new Preferences.PreferencesService(serviceRegistry);
 	
 	function DeployService(){
-	};
+	}
 	
 	DeployService.prototype = {
 			
@@ -185,15 +185,20 @@ define(['orion/Deferred', 'orion/cfui/cFClient', 'orion/URITemplate', 'orion/ser
 						}
 					);
 				} else {
-					deferred.resolve({UriTemplate: "{+OrionHome}/cfui/deploy.html#" + encodeURIComponent(JSON.stringify({ContentLocation: project.ContentLocation, AppPath: appPath})), 
+					// TODO why aren't we using URITemplate here?
+					var uriTemplate = "{+OrionHome}/cfui/deploy.html#" + encodeURIComponent(JSON.stringify({
+						ContentLocation: project.ContentLocation,
+						AppPath: appPath
+					}));
+					deferred.resolve({
+						UriTemplate: uriTemplate,
 						Width: "400px", 
-						Height: "270px",
+						Height: "310px",
 						UriTemplateId: "org.eclipse.orion.client.cf.deploy.uritemplate"});
 				}
 			},
 			
 			_retryWithLogin: function(props, func) {
-				var that = this;
 				var deferred = new Deferred();
 				
 				if(props.user && props.password){

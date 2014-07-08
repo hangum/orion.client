@@ -44,11 +44,23 @@
 	
 	<div>
 		
-		<div style="overflow: hidden; margin: 15px; min-height: 140px">
+		<form style="overflow: hidden; margin: 15px; min-height: 140px">
 			<div id="orgsSection"></div>
-			<div id="spacesTree">
-			</div>
-		</div>
+			<div id="spacesTree"></div>
+			<fieldset id="devSection" class="sectionTable devSection hidden">
+				<div>
+					<label><input type="checkbox" id="devCheckbox" /> Deploy in development mode</label>
+				</div>
+				<div class="leftLabel">
+					<label for="devPassword">Set a password:</label>
+				</div>
+				<div class="rightField">
+					<input type="password" id="devPassword" disabled />
+				</div>
+				<legend>Development Options</legend>
+			</fieldset>
+		</form>
+
 		
 		<div style="padding: 5px;" id="okRow">
 		    <button class="orionButton commandButton" style="float: right;margin-right: 20px;" id="okbutton" type="button" value="OK">OK</button>    
