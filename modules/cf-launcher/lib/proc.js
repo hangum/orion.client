@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*jslint node:true*/
+/*eslint-env node*/
 var child_process = require("child_process"),
     EventEmitter = require("events").EventEmitter,
     nodeutil = require("util"),

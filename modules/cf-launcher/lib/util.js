@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*jslint node:true*/
+/*eslint-env node*/
 var pkg = require("../package.json"),
     debug = require("debug")(pkg.name),
     nodeutil = require("util"),

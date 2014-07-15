@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*jslint node:true*/
+/*eslint-env node*/
 var cfenv = require("cfenv"),
     minimist = require("minimist"),
     startServer = require("./app"),

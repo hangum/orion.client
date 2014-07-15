@@ -1,5 +1,5 @@
-/*jslint browser:true*/
-/*global $ console*/
+/*eslint-env browser */
+/*global $ */
 var node = document.getElementById.bind(document);
 
 function appxhr(method, url, body, doneCallback) {

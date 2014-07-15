@@ -8,7 +8,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/*jslint node:true*/
+/*eslint-env node*/
 var bodyParser = require("body-parser"),
     compression = require("compression"),
     express = require("express"),
