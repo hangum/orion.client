@@ -1,17 +1,24 @@
 /*eslint-env browser */
+/*eslint no-unused-params:0 */
 /*global $ */
-var node = document.getElementById.bind(document);
 
-function appxhr(method, url, body, doneCallback) {
-	var xhr = new XMLHttpRequest();
-	xhr.open(method, url);
-	xhr.onreadystatechange = function() {
-		if (xhr.readyState === 4) {
-			doneCallback(xhr);
+// @returns A Promise resolving with the parsed application
+function appxhr(method, url, appData) {
+	if (appData) {
+		appData = JSON.stringify(appData);
+	}
+	return $.ajax(url, {
+		type: method,
+		contentType: "application/json",
+		data: appData,
+		processData: false, // don't do any query-string hackery with body
+	}).then(function(result, state, xhr) {
+		var text = xhr.responseText, app = parseApp(text);
+		if (app) {
+			return app;
 		}
-	};
-	xhr.setRequestHeader("Content-Type", "application/json");
-	xhr.send(body || null);
+		return new $.Deferred().reject(new Error(text)).promise();
+	});
 }
 
 function parseApp(responseText) {
@@ -50,81 +57,69 @@ function replaceSubtree(node, messages) {
 var control = {
 	app: null,
 	breakOnStart: false,
-	get: function(callback) {
-		appxhr("GET", "apps/", null, this._invokeCb.bind(this, callback));
+	get: function() {
+		return this._withapp(appxhr("GET", "apps/"));
 	},
-	stop: function(callback) {
-		this._changeState("stop", callback);
+	stop: function() {
+		return this._changeState("stop");
 	},
-	debug: function(breakOnStart, callback) {
-		this._changeState((breakOnStart ? "debugbreak" : "debug"), callback);
+	debug: function(breakOnStart) {
+		return this._changeState(breakOnStart ? "debugbreak" : "debug");
 	},
-	_changeState: function(newState, callback) {
+	_changeState: function(newState) {
 		var app = this.app;
 		app.state = newState;
-		appxhr("PUT", "apps/" + encodeURIComponent(app.name), JSON.stringify(app), this._invokeCb.bind(this, callback));
+		return this._withapp(appxhr("PUT", "apps/" + encodeURIComponent(app.name), app));
 	},
-	_invokeCb: function(callback, xhr) {
-		var app = this.app = parseApp(xhr.responseText);
-		if (!app) {
-			callback(new Error(xhr.responseText));
-			return;
-		}
-		this.app = app;
-		callback();
-	}
+	_withapp: function(appxhr) {
+		var _self = this;
+		return appxhr.then(function(app) {
+			_self.app = app;
+			return app;
+		});
+	},
 };
 
 var view = {
-	render: function(err) {
-		var panel = node("app-status-panel");
-		if (err) {
-			panel.textContent = err.toString();
-			return;
-		}
-		var app = control.app, isDebugging = (app.state === "debug" || app.state === "debugbreak"),
-		    template = isDebugging ? node("template-debug") : node("template-stop"),
-		    status = template.cloneNode(true);
-		replaceSubtree(status, {
+	render: function() {
+		var panel = $("#app-status-panel");
+		var app = control.app,
+		    isDebugging = (app.state === "debug" || app.state === "debugbreak"),
+		    template = isDebugging ? $("#template-debug") : $("#template-stop"),
+		    status = template.clone(true);
+		replaceSubtree(status[0], {
 			name: app.name
 		});
-		panel.innerHTML = ""; // empty
-		panel.appendChild(status);
-		node("logtail").textContent = app.tail.join("\n");
+		panel.empty().append(status);
+		$("#logtail").text(app.tail.join("\n"));
 		this.bind();
 	},
+	renderErr: function(err) {
+		$("#app-status-panel").text(err && err.toString());
+	},
 	bind: function() {
-		var btnStop = node("btn-stop"), btnStart = node("btn-start"), btnRestart = node("btn-restart");
-		var btnBreak = node("btn-break"), btnNoBreak = node("btn-no-break");
-		if (btnStop) {
-			btnStop.onclick = function() {
-				control.stop(view.render.bind(view));
-			};
-		}
-		btnBreak.onclick = function() {
+		var panel = $("#app-status-panel");
+		$("#btn-stop", panel).click(function() {
+			control.stop().then(view.render.bind(view));
+		});
+		$("#btn-break", panel).click(function() {
 			control.breakOnStart = true;
-		};
-		btnNoBreak.onclick = function() {
+		});
+		$("#btn-no-break", panel).click(function() {
 			control.breakOnStart = false;
-		};
-		var start = function() {
+		});
+		$("#btn-start, #btn-restart", panel).click(function() {
 			var dialog = $("#startPrompt").modal("show");
 			dialog.on("hide.bs.modal", function() {
 				log("starting app, --debug-brk: " + control.breakOnStart);
-				control.debug(control.breakOnStart, view.render.bind(view));
+				control.debug(control.breakOnStart).then(view.render.bind(view));
 			});
-		};
-		if (btnStart)
-			btnStart.onclick = start;
-		if (btnRestart)
-			btnRestart.onclick = start;
+		});
 	}
 };
 
 function init() {
-	control.get(function(err, app) {
-		view.render(err, app);
-	});
+	control.get().then(view.render.bind(view), view.renderErr.bind(view));
 }
 
 document.addEventListener("DOMContentLoaded", init);
