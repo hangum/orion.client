@@ -44,12 +44,22 @@
 		<!-- Main component for a primary marketing message or call to action -->
 		<div class="jumbotron" id="app-status-panel">
 		</div>
-	</div> <!-- /container -->
+	</div>
+	<div class="container container-narrow">
+		<div class="row-fluid">
+			<div class="span6">
+				Console output:<br>
+				<pre class="log pre-scrollable" id="logtail"></pre>
+			</div>
+		</div>
+	</div>
 
+	<!-- App status panel templates -->
 	<div class="templates" aria-hidden="true">
 		<div id="template-stop">
 			<p>Your application <tt>${name}</tt> is <span class="app-state">stopped</span>.</p>
 			<a class="btn btn-lg btn-primary" role="button" id="btn-start">Start</a>
+			
 		</div>
 		<div id="template-debug">
 			<p>Your application <tt>${name}</tt> is running in <span class="app-state">debug mode</span>.</p>
@@ -81,10 +91,10 @@
 	</div>
 
 	<!- ======================================================================== ->
-	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js"></script> <!-- requires jquery -->
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js" defer></script>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.1.1/js/bootstrap.min.js" defer></script> <!-- requires jquery -->
 
 	<!- ======================================================================== ->
-	<script src="js/app-status.js"></script> <!-- requires bootstrap, jquery -->
+	<script src="js/app-status.js" defer></script> <!-- requires bootstrap, jquery -->
 </body>
 </html>

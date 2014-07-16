@@ -90,6 +90,7 @@ var view = {
 		});
 		panel.innerHTML = ""; // empty
 		panel.appendChild(status);
+		node("logtail").textContent = app.tail.join("\n");
 		this.bind();
 	},
 	bind: function() {

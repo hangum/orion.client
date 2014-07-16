@@ -20,9 +20,10 @@ var bodyParser = require("body-parser"),
     nodeurl = require("url"),
     nodeutil = require("util"),
     appControl = require("./appctl"),
-    ProcessManager = require("./proc"),
-    util = require("./util");
+    ProcessManager = require("../proc"),
+    util = require("../util");
 
+var moduleDir = path.join(__dirname, "..", "..");
 var PROXY_ERR = "Error proxying to %s. Check application logs.";
 
 function startProcesses(appName, appCommand, port_app, port_debug) {
@@ -156,14 +157,14 @@ function createProxyApp(options) {
 		else next();
 	});
 	launcherApp.use(appPrefix, appControl(procman, appName));
-	launcherApp.use("/", express.static(path.join(__dirname, "..", "public")));
+	launcherApp.use("/", express.static(path.join(moduleDir, "public")));
 	//launcherApp.use("/tty", function(req, res) {res.end("not implemented")});
 	launcherApp.use(debugProxy.web.bind(debugProxy));
 
 	// ===================================================================
 	var app = express();
 	app.set("view engine", "ejs");
-	app.set("views", path.join(__dirname, "..", "views"));
+	app.set("views", path.join(moduleDir, "views"));
 	// At runtime on CF, if the parent module being debugged uses express 4.x, npm satisfies our express dependency using
 	// the parent module's copy of express rather than install express locally to us. When the parent express tries to load
 	// view engines, it simply calls require("{engine}"), which fails from the parent module's context (as it likely does

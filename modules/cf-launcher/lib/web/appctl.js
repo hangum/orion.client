@@ -63,7 +63,8 @@ function appman(processManager, userAppName) {
 function toJSON(app) {
 	return {
 		name: app.name,
-		state: app.state
+		state: app.state,
+		tail: app.getTail() || []
 	};
 }
 

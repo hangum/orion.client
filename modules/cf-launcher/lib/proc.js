@@ -12,6 +12,7 @@
 var child_process = require("child_process"),
     EventEmitter = require("events").EventEmitter,
     nodeutil = require("util"),
+    streamtailer = require("./streamtailer"),
     util = require("./util");
 
 var CHILD_ERR = "[%s] error: %s",
@@ -42,6 +43,7 @@ function ProcessInfo(name, proc, launchFn, state) {
 	this.proc = proc;
 	this.launchFn = launchFn;
 	this._state = state;
+	this.tailer = null;
 }
 util.extend(ProcessInfo.prototype, {
 	get process() {
@@ -55,6 +57,14 @@ util.extend(ProcessInfo.prototype, {
 	},
 	set state(value) {
 		this._state = value;
+	},
+	setOutputStreams: function(stdout, stderr) {
+		this.tailer = streamtailer();
+		stdout.pipe(this.tailer);
+		stderr.pipe(this.tailer);
+	},
+	getTail: function() {
+		return this.tailer ? this.tailer.getLines() : null;
 	}
 });
 
@@ -145,7 +155,7 @@ util.extend(ProcessManager.prototype, {
 	/**
 	 * Start the user app in debug mode.
 	 * @param {String}   name Name to refer to app by.
-	 * @param {String[]} args Command that launches the application. (eg. "grunt", "node foo.js")
+	 * @param {String[]} args Command that launches the application. (eg. ["grunt"], ["node", "foo.js"])
 	 * @param {Number}   port The VCAP_APP_PORT that the app should listen on.
 	 * @param {Object}   options Options that may change across different invocations.
 	 * @param {Boolean}  options.state DEBUG | DEBUG_BREAK
@@ -173,8 +183,9 @@ util.extend(ProcessManager.prototype, {
 		var child = procInfo.process;
 		isBreak && util.log("[%s] stopped at breakpoint. Visit debugger to continue.", name);
 
-		child.stdout.pipe(process.stdout); // TODO buffer & store in ProcessInfo
-		child.stderr.pipe(process.stderr); // TODO buffer & store in ProcessInfo
+		procInfo.setOutputStreams(child.stdout, child.stderr);
+		child.stdout.pipe(process.stdout);
+		child.stderr.pipe(process.stderr);
 	},
 	/**
 	 * Forks node inspector. We use the node<->node message channel.
