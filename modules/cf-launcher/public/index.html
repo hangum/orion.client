@@ -45,7 +45,7 @@
 		<div class="jumbotron" id="app-status-panel">
 		</div>
 	</div>
-	<div class="container container-narrow">
+	<div class="container container-narrow hide" id="log-panel">
 		<div class="row-fluid">
 			<div class="span6">
 				Console output:<br>
@@ -55,7 +55,7 @@
 	</div>
 
 	<!-- App status panel templates -->
-	<div class="templates" aria-hidden="true">
+	<div class="templates hidden" aria-hidden="true">
 		<div id="template-stop">
 			<p>Your application <tt>${name}</tt> is <span class="app-state">stopped</span>.</p>
 			<a class="btn btn-lg btn-primary" role="button" id="btn-start">Start</a>
