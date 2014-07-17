@@ -112,17 +112,11 @@ var view = {
 		});
 		panel.empty().append(status);
 
-		var logpanel = $("#log-panel")[0];
-		if (app.state === "stop") {
-			logpanel.classList.add("hide");
-		} else {
-			logpanel.classList.remove("hide");
-			var tail = $("#logtail");
-			var oldtail = tail.text(), newtail = app.tail.join("\n");
-			if (oldtail !== newtail)
-				tail.text(newtail);
-		}
-		view.bind();
+		var tail = $("#logtail");
+		var oldtail = tail.text(), newtail = app.tail.join("\n");
+		if (oldtail !== newtail)
+			tail.text(newtail);
+		view.bind(); 
 	},
 	renderErr: function(err) {
 		$("#app-status-panel").text(err && err.toString());
@@ -140,9 +134,8 @@ var view = {
 		$("#btn-start, #btn-restart", panel).unbind().click(function() {
 			var dialog = $("#startPrompt").modal("show");
 			$("#btn-break, #btn-no-break").unbind().click(function(e) {
-				control.breakOnStart = ("btn-start" === e.target.id);
+				control.breakOnStart = /^btn-break/.test(e.target.id);
 			});
-			// FIX: this gets added multiple times
 			dialog.unbind("hide.bs.modal").on("hide.bs.modal", function() {
 				log("starting app, --debug-brk: " + control.breakOnStart);
 				view.renderProgress("Starting...");
