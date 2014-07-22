@@ -1,8 +1,8 @@
 /*eslint-env browser, amd*/
 
-define(["orion/bootstrap", "orion/xhr", 'orion/Deferred', 'orion/cfui/cFClient', 'orion/PageUtil', 'orion/selection', 'orion/explorers/explorer',
+define(["orion/bootstrap", "orion/xhr", "orion/webui/littlelib", 'orion/Deferred', 'orion/cfui/cFClient', 'orion/PageUtil', 'orion/selection', 'orion/explorers/explorer',
 	'orion/URITemplate', 'orion/PageLinks', 'orion/preferences'], 
-		function(mBootstrap, xhr, Deferred, CFClient, PageUtil, mSelection, mExplorer, URITemplate, PageLinks, Preferences) {
+		function(mBootstrap, xhr, lib, Deferred, CFClient, PageUtil, mSelection, mExplorer, URITemplate, PageLinks, Preferences) {
 
 	mBootstrap.startup().then(
 		function(core) {
@@ -26,6 +26,7 @@ define(["orion/bootstrap", "orion/xhr", 'orion/Deferred', 'orion/cfui/cFClient',
 			var devSection = document.getElementById('devSection'); //$NON-NLS-0$
 			var devCheckbox = document.getElementById('devCheckbox'); //$NON-NLS-0$
 			var devPassword = document.getElementById('devPassword'); //$NON-NLS-0$
+			var isValid = false;
 			var explorer;
 			
 			function showMessage(message){
@@ -43,6 +44,7 @@ define(["orion/bootstrap", "orion/xhr", 'orion/Deferred', 'orion/cfui/cFClient',
 			var selection;
 			
 			function setValid(valid){
+				isValid = valid;
 				if(valid){
 					okButton.classList.remove("disabled");
 				} else {
@@ -78,7 +80,9 @@ define(["orion/bootstrap", "orion/xhr", 'orion/Deferred', 'orion/cfui/cFClient',
 			}
 			
 			function validate() {
-				setValid(devSectionValid() && selectionValid());
+				var isValid = devSectionValid() && selectionValid();
+				setValid(isValid);
+				return isValid;
 			}
 
 			function renderDevSection() {
@@ -219,6 +223,12 @@ define(["orion/bootstrap", "orion/xhr", 'orion/Deferred', 'orion/cfui/cFClient',
 			};
 
 			document.getElementById('okbutton').onclick = doAction;
+			document.getElementById('deployForm').onsubmit = function() {
+				validate();
+				if (isValid)
+					doAction();
+				return false; // do not try to POST this form
+			};
 			document.getElementById('closeDialog').onclick = closeFrame;
 			 
 			// allow frame to be dragged by title bar
